@@ -1,0 +1,6 @@
+@UserMicroservice_HostAddress = http://localhost:5001
+
+GET {{UserMicroservice_HostAddress}}/
+Accept: application/json
+
+###

@@ -1,0 +1,6 @@
+@CommentMicroservice_HostAddress = http://localhost:5003
+
+GET {{CommentMicroservice_HostAddress}}/
+Accept: application/json
+
+###
