@@ -88,6 +88,8 @@ builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
+builder.Services.AddScoped<ICommentService, CommentService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
