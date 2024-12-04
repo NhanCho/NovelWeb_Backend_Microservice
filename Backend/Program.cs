@@ -74,7 +74,7 @@ builder.Services.AddHttpClient("CommentService", c =>
     c.BaseAddress = new Uri(builder.Configuration["Microservices:CommentService"]);
 });
 
-builder.Services.AddHttpClient("NotificationService", c =>
+builder.Services.AddHttpClient<INotificationService, NotificationService>("NotificationService", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["Microservices:NotificationService"]);
 });
@@ -86,6 +86,8 @@ builder.Services.AddHttpClient("HistoryService", c =>
 
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
@@ -95,8 +97,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-
-
 
 var app = builder.Build();
 
