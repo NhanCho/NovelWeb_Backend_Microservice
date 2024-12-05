@@ -31,7 +31,7 @@ namespace NotificationMicroservice.Controllers
         }
 
         // Lấy thông báo của một user
-        [HttpGet("{userId}/notifications")]
+        [HttpGet("notifications/{userId}")]
         public async Task<IActionResult> GetNotifications(int userId)
         {
             try
@@ -46,7 +46,7 @@ namespace NotificationMicroservice.Controllers
         }
 
         // Đánh dấu thông báo là đã đọc
-        [HttpPatch("{notificationId}/mark-as-read")]
+        [HttpPatch("mark-as-read/{notificationId}")]
         public async Task<IActionResult> MarkAsRead(int notificationId)
         {
             try

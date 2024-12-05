@@ -27,12 +27,21 @@ namespace HistoryMicroservice.Repositories
 
         public void AddOrUpdateHistory(ReadingHistory history)
         {
-            var query = @"
+            // Xóa bản ghi cũ nếu tồn tại
+            var deleteQuery = "DELETE FROM ReadingHistory WHERE UserId = @UserId AND NovelId = @NovelId";
+            _connection.Execute(deleteQuery, new { UserId = history.UserId, NovelId = history.NovelId });
+
+            // Thêm bản ghi mới
+            var insertQuery = @"
             INSERT INTO ReadingHistory (UserId, NovelId, LastReadChapterId, LastReadDate)
-            VALUES (@UserId, @NovelId, @LastReadChapterId, @LastReadDate)
-            ON DUPLICATE KEY UPDATE
-            LastReadChapterId = @LastReadChapterId, LastReadDate = @LastReadDate";
-            _connection.Execute(query, history);
+            VALUES (@UserId, @NovelId, @LastReadChapterId, @LastReadDate)";
+            _connection.Execute(insertQuery, new
+            {
+                UserId = history.UserId,
+                NovelId = history.NovelId,
+                LastReadChapterId = history.LastReadChapterId,
+                LastReadDate = DateTime.Now
+            });
         }
     }
 
