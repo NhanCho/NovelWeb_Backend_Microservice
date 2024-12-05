@@ -79,10 +79,12 @@ builder.Services.AddHttpClient<INotificationService, NotificationService>("Notif
     c.BaseAddress = new Uri(builder.Configuration["Microservices:NotificationService"]);
 });
 
-builder.Services.AddHttpClient("HistoryService", c =>
+builder.Services.AddHttpClient<HistoryService>(c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["Microservices:HistoryService"]);
 });
+
+builder.Services.AddScoped<HistoryService>();
 
 builder.Services.AddScoped<UserService>();
 
