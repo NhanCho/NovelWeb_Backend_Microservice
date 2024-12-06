@@ -31,7 +31,10 @@ public class NovelRepository : INovelRepository
         await _context.Novels.AddAsync(novel);
         await _context.SaveChangesAsync();
     }
-
+    public async Task<Novel> GetNovelByNameAsync(string name)
+    {
+        return await _context.Novels.FirstOrDefaultAsync(n => n.Name == name);
+    }
     public async Task DeleteNovel(int id)
     {
         var novel = await _context.Novels.FindAsync(id);
