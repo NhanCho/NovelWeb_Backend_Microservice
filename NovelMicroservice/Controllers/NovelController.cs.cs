@@ -50,4 +50,15 @@ public class NovelController : ControllerBase
         await _repository.DeleteNovel(id);
         return Ok();
     }
+    // GET: api/Novel/getbyname/{name}
+    [HttpGet("getbyname/{name}")]
+    public async Task<IActionResult> GetByName(string name)
+    {
+        var novel = await _repository.GetNovelByNameAsync(name);
+        if (novel == null)
+        {
+            return NotFound("Novel not found.");
+        }
+        return Ok(novel);
+    }
 }

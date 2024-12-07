@@ -9,4 +9,6 @@ public interface INovelRepository
     Task AddNovel(Novel novel);
     Task DeleteNovel(int id);
     Task<IEnumerable<Novel>> GetNovelsByCategoryId(int categoryId);
+    Task<Novel> GetNovelByNameAsync(string name);
+
 }
