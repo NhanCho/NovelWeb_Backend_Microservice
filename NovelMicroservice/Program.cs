@@ -17,7 +17,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<INovelRepository, NovelRepository>();
 builder.Services.AddScoped<IChapterRepository, ChapterRepository>(); // Đăng ký ChapterRepository
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")  // Cho phép frontend từ localhost:3000
+              .AllowAnyMethod()                      // Cho phép bất kỳ phương thức HTTP
+              .AllowAnyHeader();                     // Cho phép bất kỳ header
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,6 +40,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+
 }
 
 
@@ -42,3 +52,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+app.UseCors("AllowLocalhost");  // Áp dụng chính sách CORS đã cấu hình
