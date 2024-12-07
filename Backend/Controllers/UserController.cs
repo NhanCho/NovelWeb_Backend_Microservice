@@ -24,14 +24,40 @@ namespace Backend.Controllers
         {
             try
             {
+                // Gọi hàm đăng nhập để lấy token
                 var token = await _userService.LoginAsync(loginRequest.Email, loginRequest.Password);
-                return Ok(new { Token = token });
+
+                // Trích xuất userId từ token
+                var userId = _userService.DecodeJwtAndGetUserId(token);
+
+                if (userId == 0)
+                {
+                    return BadRequest(new { Error = "Invalid token. UserId not found." });
+                }
+
+                // Gọi API GetUserById để lấy thông tin chi tiết người dùng
+                var user = await _userService.GetUserByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return NotFound(new { Error = "User not found." });
+                }
+
+                // Trả về token cùng với thông tin user
+                return Ok(new
+                {
+                    Token = token,
+                    UserID = userId, // Trả về userId
+                    Username = user.Username,
+                    Email = user.Email
+                });
             }
             catch (HttpRequestException ex)
             {
                 return BadRequest(new { Error = ex.Message });
             }
         }
+
 
         [HttpPost("Logout")]
         [Authorize]
@@ -158,7 +184,7 @@ namespace Backend.Controllers
 
 
 
-        [HttpPost("{userId}/follow-user/{followUserId}")]
+        [HttpPost("follow-user")]
         public async Task<IActionResult> FollowUser(int userId, int followUserId)
         {
             var success = await _userService.FollowUserAsync(userId, followUserId);

@@ -48,8 +48,10 @@ builder.Services.AddAuthorization();
 
 // Configure MySQL Database
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
