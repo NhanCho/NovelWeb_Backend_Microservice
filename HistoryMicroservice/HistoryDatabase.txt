@@ -23,16 +23,6 @@ CREATE TABLE ReadingHistory (
     NovelId INT NOT NULL,
     LastReadChapterId INT,
     LastReadDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (UserId) REFERENCES users(Id),
-    FOREIGN KEY (NovelId) REFERENCES novels(Id)
-);
-
-CREATE TABLE ReadingHistory (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    UserId INT NOT NULL,
-    NovelId INT NOT NULL,
-    LastReadChapterId INT,
-    LastReadDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY `UniqueUserNovel` (UserId, NovelId)
 );
 
