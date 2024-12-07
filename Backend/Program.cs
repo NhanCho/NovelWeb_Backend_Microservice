@@ -1,10 +1,14 @@
-using Backend.Services;
+﻿using Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpClient<NovelService>();
+builder.Services.AddHttpClient<CategoryService>();
+builder.Services.AddHttpClient<ChapterService>();
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -64,7 +68,18 @@ builder.Services.AddHttpClient("UserService", c =>
     c.BaseAddress = new Uri(builder.Configuration["Microservices:UserService"]);
 });
 
-builder.Services.AddHttpClient("NovelService", c =>
+builder.Services.AddHttpClient<INovelService, NovelService>(c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration["Microservices:NovelService"]);
+});
+
+
+builder.Services.AddHttpClient<ICategoryService, CategoryService>(c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration["Microservices:NovelService"]);
+});
+
+builder.Services.AddHttpClient<IChapterService, ChapterService>(c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["Microservices:NovelService"]);
 });
@@ -74,17 +89,23 @@ builder.Services.AddHttpClient("CommentService", c =>
     c.BaseAddress = new Uri(builder.Configuration["Microservices:CommentService"]);
 });
 
-builder.Services.AddHttpClient("NotificationService", c =>
+builder.Services.AddHttpClient<INotificationService, NotificationService>("NotificationService", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["Microservices:NotificationService"]);
 });
 
-builder.Services.AddHttpClient("HistoryService", c =>
+builder.Services.AddHttpClient<HistoryService>(c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["Microservices:HistoryService"]);
 });
 
+builder.Services.AddScoped<HistoryService>();
+
 builder.Services.AddScoped<UserService>();
+
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 builder.Services.AddCors(options =>
 {
@@ -95,8 +116,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-
-
 
 var app = builder.Build();
 
