@@ -5,6 +5,9 @@ namespace Backend.Services
     using System.Net.Http;
     using System.Text.Json;
     using System.Threading.Tasks;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using Microsoft.IdentityModel.Tokens;
 
     public class UserService
     {
@@ -27,8 +30,43 @@ namespace Backend.Services
                 throw new HttpRequestException($"Login failed: {error}");
             }
 
-            return await response.Content.ReadAsStringAsync();
+            // Đọc JSON object và trích xuất "token"
+            var jsonResponse = await response.Content.ReadFromJsonAsync<JsonElement>();
+            if (jsonResponse.TryGetProperty("token", out var tokenElement))
+            {
+                return tokenElement.GetString();
+            }
+
+            throw new HttpRequestException("Token not found in response.");
         }
+
+
+        public int DecodeJwtAndGetUserId(string token)
+        {
+            Console.WriteLine($"Token received: {token}");
+
+            // Kiểm tra nếu token là JSON object (chứa "token")
+            if (token.StartsWith("{") && token.Contains("\"token\":"))
+            {
+                var jsonDoc = JsonDocument.Parse(token);
+                if (jsonDoc.RootElement.TryGetProperty("token", out var tokenElement))
+                {
+                    token = tokenElement.GetString(); // Trích xuất giá trị "token"
+                }
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token))
+            {
+                throw new SecurityTokenMalformedException("Token is not well-formed");
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+            return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+        }
+
+
 
         public async Task<string> LogoutAsync(string token)
         {
@@ -157,12 +195,13 @@ namespace Backend.Services
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/User/FollowUser", new
             {
-                UserId = userId,
-                FollowUserId = followUserId
+                userID = userId, // Key phải là userID (viết đúng như UserMicroservice yêu cầu)
+                followedUserID = followUserId // Key phải là followedUserID
             });
 
             return response.IsSuccessStatusCode;
         }
+
 
         // Hủy theo dõi một người dùng
         public async Task<bool> UnfollowUserAsync(int userId, int followedUserId)
