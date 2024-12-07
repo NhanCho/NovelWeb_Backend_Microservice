@@ -34,4 +34,15 @@ public class CategoryController : ControllerBase
         await _repository.DeleteCategory(id);
         return Ok();
     }
+    // GET: api/Category/getbyname/{name}
+    [HttpGet("getbyname/{name}")]
+    public async Task<IActionResult> GetByName(string name)
+    {
+        var category = await _repository.GetCategoryByNameAsync(name);
+        if (category == null)
+        {
+            return NotFound("Category not found.");
+        }
+        return Ok(category);
+    }
 }
