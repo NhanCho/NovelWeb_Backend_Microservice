@@ -8,7 +8,7 @@ public class DatabaseConnection
 
     private DatabaseConnection()
     {
-        _connectionString = "Server=localhost;Database=comment_db;User=root;Password=huyminh2003;";
+        _connectionString = "Server=localhost;Database=comment_db;User=root;Password=1111;";
         _connection = new MySqlConnection(_connectionString);
     }
 
