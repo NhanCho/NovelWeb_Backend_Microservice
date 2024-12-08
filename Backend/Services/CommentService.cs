@@ -25,37 +25,26 @@ namespace Backend.Services
 
         public async Task<List<CommentDto>> GetCommentsByNovelAsync(int novelId)
         {
-            // Gửi yêu cầu đến Comment API để lấy danh sách comment
-            var response = await _httpClient.GetAsync($"api/comments/{novelId}");
-            response.EnsureSuccessStatusCode();
+            var comments = await _httpClient.GetAsync($"api/comments/{novelId}");
+            comments.EnsureSuccessStatusCode();
 
-            // Deserialize phản hồi từ API thành danh sách CommentDto
-            var comments = await response.Content.ReadFromJsonAsync<List<CommentDto>>() ?? new List<CommentDto>();
+            var commentList = await comments.Content.ReadFromJsonAsync<List<CommentDto>>() ?? new List<CommentDto>();
 
-            // Ghi log và kết nối với UserService để lấy thông tin User
-            foreach (var comment in comments)
+            // Debugging: Log the comments fetched before adding UserName
+            Console.WriteLine($"Fetched {commentList.Count} comments for Novel ID {novelId}");
+
+            foreach (var comment in commentList)
             {
                 try
                 {
-                    // Gửi yêu cầu đến UserService để lấy thông tin người dùng
                     var userResponse = await _userHttpClient.GetAsync($"api/User/GetUserById/{comment.UserID}");
                     if (userResponse.IsSuccessStatusCode)
                     {
-                        // Deserialize phản hồi từ UserService thành UserDto
                         var user = await userResponse.Content.ReadFromJsonAsync<UserDto>();
                         if (user != null)
                         {
-                            // Ghi log thông tin comment và username
-                            Console.WriteLine($"Comment ID: {comment.CommentID}, User: {user.Username}, Content: {comment.Content}");
+                            comment.UserName = user.Username; // Gắn UserName vào comment
                         }
-                        else
-                        {
-                            Console.WriteLine($"User not found for UserID: {comment.UserID}");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Failed to fetch User with ID: {comment.UserID}. StatusCode: {userResponse.StatusCode}");
                     }
                 }
                 catch (Exception ex)
@@ -64,18 +53,33 @@ namespace Backend.Services
                 }
             }
 
-            return comments;
+            return commentList;
         }
 
 
         public async Task<CommentDto> AddCommentAsync(CommentDto comment)
         {
+            // Debug: Kiểm tra trước khi lưu vào DB
+            Console.WriteLine($"UserName: {comment.UserName}");
+
+            if (string.IsNullOrEmpty(comment.UserName))
+            {
+                var userName = await GetUserNameByIdAsync(comment.UserID);
+                comment.UserName = userName ?? "Anonymous";
+            }
+
+            // Lưu comment vào cơ sở dữ liệu hoặc backend
             var response = await _httpClient.PostAsJsonAsync("api/comments", comment);
             response.EnsureSuccessStatusCode();
 
             var createdComment = await response.Content.ReadFromJsonAsync<CommentDto>();
+
+            // Đảm bảo rằng UserName được truyền về trong response
+            createdComment.UserName = comment.UserName; // Gán lại UserName từ comment
+
             return createdComment ?? new CommentDto();
         }
+
 
         public async Task UpdateCommentAsync(int id, CommentDto comment)
         {

@@ -12,5 +12,8 @@ namespace Backend.Models
 
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; }
+
+        // Thêm UserName để lưu tên người dùng
+        public string? UserName { get; set; }
     }
 }
