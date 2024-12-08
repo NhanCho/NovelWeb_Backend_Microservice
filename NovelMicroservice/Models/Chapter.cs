@@ -1,11 +1,16 @@
-﻿using NovelMicroservice.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class Chapter
+namespace NovelMicroservice.Models
 {
-    public int ChapterID { get; set; }
-    public int ChapterNumber { get; set; }
-    public string Content { get; set; }
+    public class Chapter
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-increment
+        public int ChapterID { get; set; }
+        public int ChapterNumber { get; set; }
+        public string Content { get; set; }
 
-    // Khóa ngoại từ Novel
-    public int NovelID { get; set; }
+        public int NovelID { get; set; } // Foreign Key
+    }
 }
