@@ -73,7 +73,6 @@ builder.Services.AddHttpClient<INovelService, NovelService>(c =>
     c.BaseAddress = new Uri(builder.Configuration["Microservices:NovelService"]);
 });
 
-
 builder.Services.AddHttpClient<ICategoryService, CategoryService>(c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["Microservices:NovelService"]);
