@@ -3,54 +3,55 @@ using System.Net.Http.Json;
 
 namespace Backend.Services
 {
-    public class HistoryService
+    public interface IHistoryService
+    {
+        Task AddOrUpdateReadingHistory(AddHistoryRequest request);
+        Task<IEnumerable<ReadingHistory>> GetReadingHistoryByUserId(int userId);
+    }
+
+    public class HistoryService : IHistoryService
     {
         private readonly HttpClient _httpClient;
+        private readonly HttpClient _userHttpClient;
 
-        public HistoryService(HttpClient httpClient)
+        public HistoryService(HttpClient httpClient, IHttpClientFactory httpClientFactory)
         {
-            // Inject HttpClient từ Dependency Injection
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("http://localhost:5005/"); // Đường dẫn microservice
+            _httpClient.BaseAddress = new Uri("http://localhost:5005/"); // Đường dẫn microservice History
+            _userHttpClient = httpClientFactory.CreateClient("UserService");
         }
 
-        // Thêm hoặc cập nhật lịch sử đọc
+        /// Thêm hoặc cập nhật lịch sử đọc.
         public async Task AddOrUpdateReadingHistory(AddHistoryRequest request)
         {
-            try
+            // Kiểm tra UserId qua UserService
+            var userResponse = await _userHttpClient.GetAsync($"api/User/GetUserById/{request.UserId}");
+            if (!userResponse.IsSuccessStatusCode)
             {
-                var response = await _httpClient.PostAsJsonAsync("api/ReadingHistory", request);
+                throw new Exception($"UserId {request.UserId} không tồn tại!");
+            }
 
-                // Kiểm tra nếu request không thành công
-                response.EnsureSuccessStatusCode();
-            }
-            catch (Exception ex)
-            {
-                // Log lỗi
-                Console.WriteLine($"Error in AddOrUpdateReadingHistory: {ex.Message}");
-                throw;
-            }
+            // Gửi yêu cầu POST tới API của History
+            var response = await _httpClient.PostAsJsonAsync("api/ReadingHistory", request);
+            response.EnsureSuccessStatusCode();
         }
 
-        // Lấy danh sách lịch sử đọc theo UserId
+        /// Lấy lịch sử đọc theo UserId.
         public async Task<IEnumerable<ReadingHistory>> GetReadingHistoryByUserId(int userId)
         {
-            try
+            // Kiểm tra UserId qua UserService
+            var userResponse = await _userHttpClient.GetAsync($"api/User/GetUserById/{userId}");
+            if (!userResponse.IsSuccessStatusCode)
             {
-                var response = await _httpClient.GetAsync($"api/ReadingHistory/{userId}");
-
-                // Kiểm tra nếu request không thành công
-                response.EnsureSuccessStatusCode();
-
-                // Deserialize JSON thành danh sách ReadingHistory
-                return await response.Content.ReadFromJsonAsync<IEnumerable<ReadingHistory>>();
+                throw new Exception($"UserId {userId} không tồn tại!");
             }
-            catch (Exception ex)
-            {
-                // Log lỗi
-                Console.WriteLine($"Error in GetReadingHistoryByUserId: {ex.Message}");
-                throw;
-            }
+
+            // Gửi yêu cầu GET tới API của History
+            var response = await _httpClient.GetAsync($"api/ReadingHistory/{userId}");
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<IEnumerable<ReadingHistory>>()
+                   ?? new List<ReadingHistory>();
         }
     }
 }
