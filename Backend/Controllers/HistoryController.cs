@@ -15,6 +15,7 @@ namespace Backend.Controllers
             _historyService = historyService;
         }
 
+        // POST: Thêm hoặc cập nhật lịch sử đọc
         [HttpPost]
         public async Task<IActionResult> AddOrUpdateReadingHistory([FromBody] AddHistoryRequest request)
         {
@@ -29,13 +30,14 @@ namespace Backend.Controllers
             }
         }
 
+        // GET: Lấy danh sách lịch sử đọc theo UserId
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetReadingHistoryByUserId(int userId)
         {
             try
             {
-                var history = await _historyService.GetReadingHistoryByUserId(userId);
-                return Ok(history);
+                var histories = await _historyService.GetReadingHistoryByUserId(userId);
+                return Ok(histories);
             }
             catch (Exception ex)
             {
