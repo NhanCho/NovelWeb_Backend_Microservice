@@ -33,16 +33,16 @@ namespace HistoryMicroservice.Repositories
 
             // Thêm bản ghi mới
             var insertQuery = @"
-            INSERT INTO ReadingHistory (UserId, NovelId, LastReadChapterId, LastReadDate)
-            VALUES (@UserId, @NovelId, @LastReadChapterId, @LastReadDate)";
+            INSERT INTO ReadingHistory (UserId, NovelId, ChapterID, LastReadDate)
+            VALUES (@UserId, @NovelId, @ChapterID, @LastReadDate)";
             _connection.Execute(insertQuery, new
             {
                 UserId = history.UserId,
                 NovelId = history.NovelId,
-                LastReadChapterId = history.LastReadChapterId,
+                ChapterID = history.ChapterID,
                 LastReadDate = DateTime.Now
             });
         }
-    }
 
+    }
 }
