@@ -13,14 +13,12 @@ namespace Backend.Services
     {
         private readonly HttpClient _httpClient;
         private readonly HttpClient _userHttpClient;
-        private readonly HttpClient _novelHttpClient;
 
         public HistoryService(HttpClient httpClient, IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("http://localhost:5005/"); // Đường dẫn microservice History
             _userHttpClient = httpClientFactory.CreateClient("UserService");
-            _novelHttpClient = httpClientFactory.CreateClient("NovelService");
         }
 
         /// Thêm hoặc cập nhật lịch sử đọc.
@@ -32,12 +30,6 @@ namespace Backend.Services
             {
                 throw new Exception($"UserId {request.UserId} không tồn tại!");
             }
-
-            //var novelResponse = await _novelHttpClient.GetAsync($"api/Novel/getbyid/{request.NovelId}");
-            //if (!novelResponse.IsSuccessStatusCode)
-            //{
-            //    throw new Exception($"NovelId {request.NovelId} không tồn tại!");
-            //}
 
             // Gửi yêu cầu POST tới API của History
             var response = await _httpClient.PostAsJsonAsync("api/ReadingHistory", request);
