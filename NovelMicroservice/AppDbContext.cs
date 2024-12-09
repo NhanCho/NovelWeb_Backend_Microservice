@@ -13,10 +13,29 @@ namespace NovelMicroservice.Data
         public DbSet<Chapter> Chapters { get; set; }
 
         // Cấu hình quan hệ giữa các bảng
+        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // Seed Category Data
+            modelBuilder.Entity<Category>().HasData(
+                new Category { CategoryID = 1, Name = "Fantasy" },
+                new Category { CategoryID = 2, Name = "Horror" }
+            );
+
+            // Seed Novel Data
+            modelBuilder.Entity<Novel>().HasData(
+                new Novel { NovelID = 1, Name = "Little Adventures", Author = "Author A", Description = "A fun tale for kids", CategoryID = 1 },
+                new Novel { NovelID = 2, Name = "Haunted House", Author = "Author B", Description = "A scary story", CategoryID = 2 }
+            );
+
+            // Seed Chapter Data
+            modelBuilder.Entity<Chapter>().HasData(
+                new Chapter { ChapterID = 1, ChapterNumber = 1, Content = "Once upon a time...", NovelID = 1 },
+                new Chapter { ChapterID = 2, ChapterNumber = 1, Content = "It was a dark and stormy night...", NovelID = 2 }
+            );
             // Cấu hình mối quan hệ giữa Category và Novel
             modelBuilder.Entity<Novel>(entity =>
             {

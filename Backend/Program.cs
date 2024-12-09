@@ -5,9 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHttpClient<NovelService>();
-builder.Services.AddHttpClient<CategoryService>();
-builder.Services.AddHttpClient<ChapterService>();
+
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -62,7 +60,15 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")  // Cho phép frontend từ localhost:3000
+              .AllowAnyMethod()                      // Cho phép bất kỳ phương thức HTTP
+              .AllowAnyHeader();                     // Cho phép bất kỳ header
+    });
+});
 builder.Services.AddHttpClient("UserService", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["Microservices:UserService"]);
