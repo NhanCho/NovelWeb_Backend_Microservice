@@ -15,7 +15,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<INovelRepository, NovelRepository>();
-builder.Services.AddScoped<IChapterRepository, ChapterRepository>();
+builder.Services.AddScoped<IChapterRepository, ChapterRepository>(); // Đăng ký ChapterRepository
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+
 }
 
 app.UseHttpsRedirection();
@@ -36,3 +39,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+app.UseCors("AllowLocalhost");  // Áp dụng chính sách CORS đã cấu hình
