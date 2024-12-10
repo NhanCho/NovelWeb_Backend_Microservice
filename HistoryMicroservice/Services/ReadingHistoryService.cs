@@ -29,7 +29,7 @@ namespace HistoryMicroservice.Services
             {
                 UserId = request.UserId,
                 NovelId = request.NovelId,
-                LastReadChapterId = request.LastReadChapterId,
+                ChapterID = request.ChapterID,
                 LastReadDate = DateTime.Now
             };
             _repository.AddOrUpdateHistory(history);

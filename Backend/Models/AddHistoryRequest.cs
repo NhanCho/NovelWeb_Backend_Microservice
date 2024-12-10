@@ -6,7 +6,11 @@ namespace Backend.Models
     {
         [JsonPropertyName("userID")]
         public int UserId { get; set; }
+
+        [JsonPropertyName("NovelID")]
         public int NovelId { get; set; }
-        public int? LastReadChapterId { get; set; }
+
+        [JsonPropertyName("ChapterID")]
+        public int? ChapterID { get; set; } // Đổi từ LastReadChapterId thành ChapterID
     }
 }
