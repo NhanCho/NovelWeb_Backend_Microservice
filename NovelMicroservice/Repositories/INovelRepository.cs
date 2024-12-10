@@ -10,5 +10,6 @@ public interface INovelRepository
     Task DeleteNovel(int id);
     Task<IEnumerable<Novel>> GetNovelsByCategoryId(int categoryId);
     Task<Novel> GetNovelByNameAsync(string name);
+    Task UpdateNovelImageAsync(int novelId, string imageUrl);
 
 }
