@@ -15,6 +15,7 @@ namespace Backend.Services
         Task DeleteNovelAsync(int id);
         Task<List<Novel>> GetNovelsByCategoryIdAsync(int categoryId);
         Task<Novel> GetNovelByNameAsync(string name); // Thêm API mới
+
     }
 
     public class NovelService : INovelService

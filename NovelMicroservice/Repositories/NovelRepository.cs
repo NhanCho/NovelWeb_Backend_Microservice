@@ -15,7 +15,15 @@ public class NovelRepository : INovelRepository
     {
         _context = context;
     }
-
+    public async Task UpdateNovelImageAsync(int novelId, string imageUrl)
+    {
+        var novel = await _context.Novels.FindAsync(novelId);
+        if (novel != null)
+        {
+            novel.ImageUrl = imageUrl;
+            await _context.SaveChangesAsync();
+        }
+    }
     public async Task<IEnumerable<Novel>> GetAllNovels()
     {
         return await _context.Novels.ToListAsync();  // Trả về tất cả các tiểu thuyết mà không cần thông tin về Category

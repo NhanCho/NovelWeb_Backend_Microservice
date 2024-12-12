@@ -11,7 +11,15 @@ public class CategoryRepository : ICategoryRepository
     {
         _context = context;
     }
-
+    public async Task UpdateCategoryImageAsync(int categoryID, string imageUrl)
+    {
+        var category = await _context.Categories.FindAsync(categoryID);
+        if (category != null)
+        {
+            category.ImageUrl = imageUrl;
+            await _context.SaveChangesAsync();
+        }
+    }
     public async Task<IEnumerable<Category>> GetAllCategories()
     {
         return await _context.Categories.ToListAsync();

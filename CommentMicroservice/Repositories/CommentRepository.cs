@@ -41,6 +41,7 @@ public class CommentRepository
         {
             comment.CreatedDate = DateTime.Now;  // Gán thời gian hiện tại
         }
+
         // Chỉ cần chèn NovelID, UserID, và Content. Không cần truyền CreatedDate vì MySQL sẽ tự động xử lý.
         string query = "INSERT INTO Comments (NovelID, UserID, Content, CreatedDate) VALUES (@novelId, @userId, @content, @createdDate)";
         var cmd = new MySqlCommand(query, _connection);
@@ -51,8 +52,14 @@ public class CommentRepository
 
         _connection.Open();
         cmd.ExecuteNonQuery();
+
+        // Lấy CommentID sau khi insert
+        cmd.CommandText = "SELECT LAST_INSERT_ID()";  // Lấy ID mới tạo từ MySQL
+        comment.CommentID = Convert.ToInt32(cmd.ExecuteScalar());  // Gán giá trị CommentID
+
         _connection.Close();
     }
+
 
 
     public void UpdateComment(int id, Comment comment)

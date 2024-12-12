@@ -11,8 +11,8 @@ using NovelMicroservice.Data;
 namespace NovelMicroservice.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241208122355_AddSeedData")]
-    partial class AddSeedData
+    [Migration("20241210093609_AddImageUrlToSeedData")]
+    partial class AddImageUrlToSeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,10 @@ namespace NovelMicroservice.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CategoryID"));
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -43,13 +47,21 @@ namespace NovelMicroservice.Migrations
                     b.HasData(
                         new
                         {
-                            CategoryID = 3,
-                            Name = "Fantasy"
+                            CategoryID = 1,
+                            ImageUrl = "https://media.istockphoto.com/id/177321629/vi/anh/nh%C3%B3m-tr%E1%BA%BB-em-c%C3%B3-d%E1%BA%A5u-hi%E1%BB%87u-gi%C6%A1-ng%C3%B3n-tay-c%C3%A1i-l%C3%AAn.jpg?s=2048x2048&w=is&k=20&c=osGSOiFdJ-A3QB5UOD06R22vFACOAc9A5MYddfV4EBs=",
+                            Name = "Children"
                         },
                         new
                         {
-                            CategoryID = 4,
+                            CategoryID = 2,
+                            ImageUrl = "https://media.istockphoto.com/id/1198829958/photo/group-of-five-scary-figures-in-hooded-cloaks-in-the-dark.jpg?s=612x612&w=0&k=20&c=Vjx6Kz6zpdqPrUr1RAUyXWwcOlsy64vd6_ENdPl-r0E=",
                             Name = "Horror"
+                        },
+                        new
+                        {
+                            CategoryID = 3,
+                            ImageUrl = "https://media.istockphoto.com/id/688410346/vector/chinese-style-fantasy-scenes.jpg?s=612x612&w=0&k=20&c=r3skS5InspYQ7EqUCCzUzU3QHcwRwD6mNRbDpP8sIG4=",
+                            Name = "Fantasy"
                         });
                 });
 
@@ -80,17 +92,31 @@ namespace NovelMicroservice.Migrations
                     b.HasData(
                         new
                         {
-                            ChapterID = 5,
+                            ChapterID = 1,
                             ChapterNumber = 1,
                             Content = "Once upon a time...",
-                            NovelID = 5
+                            NovelID = 1
                         },
                         new
                         {
-                            ChapterID = 6,
+                            ChapterID = 2,
+                            ChapterNumber = 2,
+                            Content = "The journey begins.",
+                            NovelID = 1
+                        },
+                        new
+                        {
+                            ChapterID = 3,
                             ChapterNumber = 1,
-                            Content = "It was a dark and stormy night...",
-                            NovelID = 6
+                            Content = "In the shadows of the night.",
+                            NovelID = 2
+                        },
+                        new
+                        {
+                            ChapterID = 4,
+                            ChapterNumber = 1,
+                            Content = "The boy who lived.",
+                            NovelID = 3
                         });
                 });
 
@@ -112,6 +138,10 @@ namespace NovelMicroservice.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -125,19 +155,30 @@ namespace NovelMicroservice.Migrations
                     b.HasData(
                         new
                         {
-                            NovelID = 5,
-                            Author = "Author A",
-                            CategoryID = 3,
-                            Description = "A fun tale for kids",
-                            Name = "Little Adventures"
+                            NovelID = 1,
+                            Author = "Antoine de Saint-Exupéry",
+                            CategoryID = 1,
+                            Description = "A timeless story of a young prince and his adventures.",
+                            ImageUrl = "https://images-na.ssl-images-amazon.com/images/I/71OZY035QKL.jpg",
+                            Name = "The Little Prince"
                         },
                         new
                         {
-                            NovelID = 6,
-                            Author = "Author B",
-                            CategoryID = 4,
-                            Description = "A scary story",
-                            Name = "Haunted House"
+                            NovelID = 2,
+                            Author = "Bram Stoker",
+                            CategoryID = 2,
+                            Description = "The classic vampire tale that started it all.",
+                            ImageUrl = "https://cdn.kobo.com/book-images/88a05cf1-a3b6-461b-a8f7-f0e25b06274a/1200/1200/False/dracula-bram-stoker.jpg",
+                            Name = "Dracula"
+                        },
+                        new
+                        {
+                            NovelID = 3,
+                            Author = "J.K. Rowling",
+                            CategoryID = 3,
+                            Description = "A young wizard's journey through magic and friendship.",
+                            ImageUrl = "https://nhasachphuongnam.com/images/detailed/160/81YOuOGFCJL.jpg",
+                            Name = "Harry Potter"
                         });
                 });
 #pragma warning restore 612, 618
