@@ -1,6 +1,6 @@
-CREATE DATABASE webnovel;
+CREATE DATABASE historydb;
 
-use webnovel;
+use historydb;
 
 CREATE TABLE ReadingHistory (
     Id INT AUTO_INCREMENT PRIMARY KEY,
